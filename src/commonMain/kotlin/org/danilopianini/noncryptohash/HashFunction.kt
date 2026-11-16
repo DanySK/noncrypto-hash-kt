@@ -1,5 +1,7 @@
 package org.danilopianini.noncryptohash
 
+import org.danilopianini.noncryptohash.common.updateValue
+
 /**
  * A stateless hash algorithm, configured once (e.g., with a seed) and safe to share across threads.
  *

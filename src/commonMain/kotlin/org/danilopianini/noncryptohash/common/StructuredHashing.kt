@@ -1,11 +1,14 @@
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
-package org.danilopianini.noncryptohash
+package org.danilopianini.noncryptohash.common
 
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
+import org.danilopianini.noncryptohash.Digest
+import org.danilopianini.noncryptohash.FunnelRegistry
+import org.danilopianini.noncryptohash.Hashable
 
 /**
  * Absorbs a structured [value] so that, for values of the same type, different values produce different byte
@@ -63,7 +66,7 @@ import kotlin.uuid.Uuid
  *     which change across runs and targets;
  *   - data classes are deterministic, but [Double] and [Float] properties are formatted differently across
  *     targets (`1.0` is `"1.0"` on the JVM and `"1"` on JS), making their hash target-dependent.
- *   Implement [Hashable] or register a [Funnel] for such types.
+ *   Implement [Hashable] or register a [org.danilopianini.noncryptohash.Funnel] for such types.
  * - Cross-type collisions are avoided by the tags, except for the documented equivalences above
  *   (e.g., [String] and other [CharSequence]s, or all empty ranges).
  */

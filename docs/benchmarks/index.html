@@ -50,6 +50,7 @@
         <li>Each measurement warms up while calibrating a batch size, then times several batches. The figure shown is the median batch; the table also reports the fastest and slowest.</li>
         <li>Inputs change at every iteration, and every hash is accumulated into a value printed at the end, so no work can be optimized away.</li>
         <li>One-shot workloads use <code>HashFunction.hashLong</code>; <em>Long, reused digest</em> resets and reuses one streaming digest.</li>
+        <li><em>1000 objects, structured</em> hashes, with <code>HashFunction.hashValueLong</code>, a list shaped like the path of an aggregate program (as in Collektive): 500 identifier-like strings of 10 to 100 characters and 500 primitives, mostly small indices, shuffled. Its size is the number of bytes absorbed by the structured encoding, including type tags and lengths.</li>
         <li>Allocations per operation come from the JVM thread allocation counter; other runtimes do not expose one.</li>
         <li>Digest footprints come from the allocation counter on the JVM (exact), and from the heap size after garbage collection elsewhere (approximate, averaged over 100,000 digests). WASI exposes no memory statistics.</li>
         <li>On JavaScript, <code>Long</code> is emulated, so 64-bit algorithms are expected to be slow there.</li>

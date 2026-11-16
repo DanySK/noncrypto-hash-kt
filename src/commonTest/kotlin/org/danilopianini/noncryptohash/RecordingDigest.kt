@@ -1,5 +1,7 @@
 package org.danilopianini.noncryptohash
 
+import org.danilopianini.noncryptohash.common.updateValue
+
 /**
  * A [Digest] that records every absorbed byte, to test encodings.
  */

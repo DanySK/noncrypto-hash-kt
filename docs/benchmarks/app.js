@@ -69,7 +69,13 @@ function workloadsOf(run) {
   const workloads = [];
   run.targets.forEach((target) => target.results.forEach((result) => {
     if (!workloads.some((workload) => workload.id === result.workload)) {
-      workloads.push({ id: result.workload, label: result.label, inputBytes: result.inputBytes });
+      workloads.push({
+        id: result.workload,
+        label: result.label,
+        inputBytes: result.inputBytes,
+        // Older results have no bulk flag: bulk was implied by the input size
+        bulk: result.bulk ?? result.inputBytes >= BULK_BYTES,
+      });
     }
   }));
   return workloads;
@@ -80,9 +86,9 @@ function seriesColor(run, algorithm) {
   return `var(--series-${slot + 1})`;
 }
 
-/* Small inputs: time per operation. Bulk inputs: throughput. */
+/* Small inputs and structured values: time per operation. Bulk inputs: throughput. */
 function metricFor(workload) {
-  if (workload.inputBytes >= BULK_BYTES) {
+  if (workload.bulk) {
     return {
       description: "Throughput, median of the measured batches. Higher is better.",
       value: (result) => result.bytesPerSecond,

@@ -49,6 +49,7 @@ internal fun measure(algorithm: HashFunction, workload: Workload): RawJson {
         "workload" to workload.id,
         "label" to workload.label,
         "inputBytes" to workload.inputBytes,
+        "bulk" to workload.bulk,
         "batch" to batch,
         "rounds" to BenchmarkConfig.ROUNDS,
         "nsPerOp" to json(

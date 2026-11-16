@@ -1,7 +1,7 @@
 package org.danilopianini.noncryptohash.xxhash
 
 import org.danilopianini.noncryptohash.HashFunction
-import org.danilopianini.noncryptohash.requireRange
+import org.danilopianini.noncryptohash.common.requireRange
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.P1
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.P2
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.P5

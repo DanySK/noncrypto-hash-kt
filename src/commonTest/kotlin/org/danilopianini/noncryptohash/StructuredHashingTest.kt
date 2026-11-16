@@ -6,8 +6,8 @@ import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+import org.danilopianini.noncryptohash.common.updateValue
 
 class StructuredHashingTest {
 
@@ -166,7 +166,6 @@ class StructuredHashingTest {
         assertNotEquals(structured(Point(1, 2)), structured("Point(x=1, y=2)"))
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     @Test
     fun `uuids are hashed by value`() {
         val uuid = Uuid.parse("550e8400-e29b-41d4-a716-446655440000")

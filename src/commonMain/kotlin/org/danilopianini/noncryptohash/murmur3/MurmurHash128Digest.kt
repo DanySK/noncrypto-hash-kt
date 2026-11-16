@@ -1,8 +1,9 @@
 package org.danilopianini.noncryptohash.murmur3
 
 import org.danilopianini.noncryptohash.Digest
-import org.danilopianini.noncryptohash.requireRange
-import org.danilopianini.noncryptohash.requireRoom
+import org.danilopianini.noncryptohash.common.LongLaneDigest
+import org.danilopianini.noncryptohash.common.absorbInBlocks
+import org.danilopianini.noncryptohash.common.requireRoom
 
 /**
  * Streaming [MurmurHash128] with the given [seed], zero-extended to 64 bits.
@@ -10,7 +11,7 @@ import org.danilopianini.noncryptohash.requireRoom
  *
  * @property seed the seed restored by [reset].
  */
-class MurmurHash128Digest(val seed: Int = 0) : Digest {
+class MurmurHash128Digest(val seed: Int = 0) : LongLaneDigest() {
     private var h1: Long = seed.toLong() and INT_MASK
     private var h2: Long = h1
 
@@ -25,58 +26,8 @@ class MurmurHash128Digest(val seed: Int = 0) : Digest {
 
     override val bits: Int = BITS
 
-    override fun digestInto(destination: ByteArray, offset: Int) {
-        requireRoom(destination, offset, BYTES)
-        finalize { high, low ->
-            writeBigEndian(high, destination, offset)
-            writeBigEndian(low, destination, offset + Long.SIZE_BYTES)
-        }
-    }
-
-    override fun digestLong(): Long = finalize { _, low -> low }
-
-    override fun reset(): Digest = apply {
-        h1 = seed.toLong() and INT_MASK
-        h2 = h1
-        k1 = 0
-        k2 = 0
-        buffered = 0
-        length = 0
-    }
-
-    override fun update(bytes: ByteArray, offset: Int, length: Int): Digest = apply {
-        requireRange(bytes, offset, length)
-        var index = offset
-        val end = offset + length
-        // Complete the pending block, if any
-        while (buffered != 0 && index < end) {
-            absorb(bytes[index++].toLong() and BYTE_MASK, 1)
-        }
-        // Whole blocks, read directly from the array
-        while (end - index >= BYTES) {
-            mixBlock(readLittleEndian(bytes, index), readLittleEndian(bytes, index + Long.SIZE_BYTES))
-            index += BYTES
-            this.length += BYTES
-        }
-        // The tail goes into the pending block
-        while (index < end) {
-            absorb(bytes[index++].toLong() and BYTE_MASK, 1)
-        }
-    }
-
-    override fun update(value: Byte): Digest = apply { absorb(value.toLong() and BYTE_MASK, Byte.SIZE_BYTES) }
-
-    override fun update(value: Short): Digest = apply { absorb(value.toLong() and SHORT_MASK, Short.SIZE_BYTES) }
-
-    override fun update(value: Int): Digest = apply { absorb(value.toLong() and INT_MASK, Int.SIZE_BYTES) }
-
-    override fun update(value: Long): Digest = apply { absorb(value, Long.SIZE_BYTES) }
-
-    /**
-     * Appends the low [width] bytes of [value] (whose other bytes must be zero) to the pending block,
-     * processing the block when it is complete.
-     */
-    private fun absorb(value: Long, width: Int) {
+    // Appends to the pending block, and processes it when it is complete
+    override fun absorb(value: Long, width: Int) {
         val position = buffered
         if (position < Long.SIZE_BYTES) {
             k1 = k1 or (value shl (position * Byte.SIZE_BITS))
@@ -98,6 +49,34 @@ class MurmurHash128Digest(val seed: Int = 0) : Digest {
             buffered = end
         }
         length += width
+    }
+
+    override fun digestInto(destination: ByteArray, offset: Int) {
+        requireRoom(destination, offset, BYTES)
+        finalize { high, low ->
+            writeBigEndian(high, destination, offset)
+            writeBigEndian(low, destination, offset + Long.SIZE_BYTES)
+        }
+    }
+
+    override fun digestLong(): Long = finalize { _, low -> low }
+
+    override fun reset(): Digest = apply {
+        h1 = seed.toLong() and INT_MASK
+        h2 = h1
+        k1 = 0
+        k2 = 0
+        buffered = 0
+        length = 0
+    }
+
+    override fun update(bytes: ByteArray, offset: Int, length: Int): Digest = apply {
+        absorbInBlocks(bytes, offset, length, BYTES, { buffered != 0 }, { absorb(it.toLong(), 1) }) { start, end ->
+            for (index in start until end step BYTES) {
+                mixBlock(readLittleEndian(bytes, index), readLittleEndian(bytes, index + Long.SIZE_BYTES))
+            }
+            this.length += end - start
+        }
     }
 
     /**
@@ -131,7 +110,6 @@ class MurmurHash128Digest(val seed: Int = 0) : Digest {
         const val BITS: Int = 128
         private const val BYTES: Int = BITS / Byte.SIZE_BITS
         private const val BYTE_MASK: Long = 0xFF
-        private const val SHORT_MASK: Long = 0xFFFF
         private const val INT_MASK: Long = 0xFFFF_FFFFL
         private const val C1: Long = -0x783c_846e_eebd_ac2bL // 0x87c37b91114253d5
         private const val C2: Long = 0x4cf5_ad43_2745_937fL

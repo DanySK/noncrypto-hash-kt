@@ -1,4 +1,4 @@
-package org.danilopianini.noncryptohash
+package org.danilopianini.noncryptohash.common
 
 /**
  * Type tags written by [updateValue] before each value of the structured encoding.

@@ -1,8 +1,8 @@
 package org.danilopianini.noncryptohash.xxhash
 
 import org.danilopianini.noncryptohash.Digest
-import org.danilopianini.noncryptohash.requireRange
-import org.danilopianini.noncryptohash.requireRoom
+import org.danilopianini.noncryptohash.common.absorbInBlocks
+import org.danilopianini.noncryptohash.common.requireRoom
 
 /**
  * Streaming [XxHash32] with the given [seed], read as an unsigned 32-bit integer.
@@ -41,17 +41,22 @@ class XxHash32Digest(val seed: Int = 0) : Digest {
     }
 
     override fun digestInt(): Int {
-        var hash = if (large) converge(v1, v2, v3, v4) else seed + P5
-        hash += length
+        var hash = (if (large) converge(v1, v2, v3, v4) else seed + P5) + length
         // The pending bytes are the tail: whole words first, then single bytes
-        var index = 0
-        while (buffered - index * Int.SIZE_BYTES >= Int.SIZE_BYTES) {
-            hash = tailWord(hash, pending(index++))
+        val words = buffered ushr 2
+        if (words > 0) {
+            hash = tailWord(hash, p1)
         }
-        var word = pending(index)
-        repeat(buffered - index * Int.SIZE_BYTES) {
-            hash = tailByte(hash, word and BYTE_MASK)
-            word = word ushr Byte.SIZE_BITS
+        if (words > 1) {
+            hash = tailWord(hash, p2)
+        }
+        if (words > 2) {
+            hash = tailWord(hash, p3)
+        }
+        var rest = pending(words)
+        repeat(buffered and WORD_MASK) {
+            hash = tailByte(hash, rest and BYTE_MASK)
+            rest = rest ushr Byte.SIZE_BITS
         }
         return avalanche(hash)
     }
@@ -73,36 +78,23 @@ class XxHash32Digest(val seed: Int = 0) : Digest {
     }
 
     override fun update(bytes: ByteArray, offset: Int, length: Int): Digest = apply {
-        requireRange(bytes, offset, length)
-        var index = offset
-        val end = offset + length
-        // Complete the pending stripe, if any
-        while (buffered != 0 && index < end) {
-            absorb(bytes[index++].toInt() and BYTE_MASK, 1)
-        }
-        // Whole stripes, read directly from the array
-        if (end - index >= STRIPE) {
+        absorbInBlocks(bytes, offset, length, STRIPE, { buffered != 0 }, { absorb(it, 1) }) { start, end ->
             var a = v1
             var b = v2
             var c = v3
             var d = v4
-            while (end - index >= STRIPE) {
+            for (index in start until end step STRIPE) {
                 a = round(a, readLittleEndian(bytes, index))
                 b = round(b, readLittleEndian(bytes, index + Int.SIZE_BYTES))
                 c = round(c, readLittleEndian(bytes, index + 2 * Int.SIZE_BYTES))
                 d = round(d, readLittleEndian(bytes, index + 3 * Int.SIZE_BYTES))
-                index += STRIPE
-                this.length += STRIPE
             }
             v1 = a
             v2 = b
             v3 = c
             v4 = d
             large = true
-        }
-        // The tail goes into the pending stripe
-        while (index < end) {
-            absorb(bytes[index++].toInt() and BYTE_MASK, 1)
+            this.length += end - start
         }
     }
 
@@ -110,11 +102,20 @@ class XxHash32Digest(val seed: Int = 0) : Digest {
 
     override fun update(value: Short): Digest = apply { absorb(value.toInt() and SHORT_MASK, Short.SIZE_BYTES) }
 
-    override fun update(value: Int): Digest = apply { absorb(value, Int.SIZE_BYTES) }
+    override fun update(value: Int): Digest = apply {
+        if ((buffered and WORD_MASK) == 0) appendWord(value) else absorb(value, Int.SIZE_BYTES)
+    }
 
     override fun update(value: Long): Digest = apply {
-        absorb(value.toInt(), Int.SIZE_BYTES)
-        absorb((value ushr Int.SIZE_BITS).toInt(), Int.SIZE_BYTES)
+        val low = value.toInt()
+        val high = (value ushr Int.SIZE_BITS).toInt()
+        if ((buffered and WORD_MASK) == 0) {
+            appendWord(low)
+            appendWord(high)
+        } else {
+            absorb(low, Int.SIZE_BYTES)
+            absorb(high, Int.SIZE_BYTES)
+        }
     }
 
     /**
@@ -149,6 +150,32 @@ class XxHash32Digest(val seed: Int = 0) : Digest {
         length += width
     }
 
+    /**
+     * Appends a whole [word] when the pending bytes are word-aligned (the next word is still empty),
+     * processing the stripe when it is complete.
+     */
+    private fun appendWord(word: Int) {
+        if (buffered == STRIPE - Int.SIZE_BYTES) {
+            v1 = round(v1, p1)
+            v2 = round(v2, p2)
+            v3 = round(v3, p3)
+            v4 = round(v4, word)
+            large = true
+            p1 = 0
+            p2 = 0
+            p3 = 0
+            buffered = 0
+        } else {
+            when (buffered) {
+                0 -> p1 = word
+                Int.SIZE_BYTES -> p2 = word
+                else -> p3 = word
+            }
+            buffered += Int.SIZE_BYTES
+        }
+        length += Int.SIZE_BYTES
+    }
+
     private fun orPending(word: Int, bits: Int) {
         when (word) {
             0 -> p1 = p1 or bits
@@ -175,6 +202,7 @@ class XxHash32Digest(val seed: Int = 0) : Digest {
         const val P5: Int = 0x1656_67b1
         private const val BYTE_MASK: Int = 0xFF
         private const val SHORT_MASK: Int = 0xFFFF
+        private const val WORD_MASK: Int = 3
         private const val INT_MASK: Long = 0xFFFF_FFFFL
         private const val ROUND_ROTATION: Int = 13
         private const val TAIL_BYTE_ROTATION: Int = 11

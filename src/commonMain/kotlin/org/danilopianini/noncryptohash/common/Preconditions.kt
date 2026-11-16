@@ -1,4 +1,4 @@
-package org.danilopianini.noncryptohash
+package org.danilopianini.noncryptohash.common
 
 /**
  * Checks that [destination] has room for [bytes] bytes from [offset].
