@@ -1,3 +1,20 @@
+## 1.0.0 (2026-11-16)
+
+### ⚠ BREAKING CHANGES
+
+* initial API and general-purpose operations
+
+### Features
+
+* add benchmarks for hash functions across multiple targets ([a5172e0](https://github.com/DanySK/noncrypto-hash-kt/commit/a5172e06d1d95bdf1406a5ab7103e4c47517140c))
+* add MurmurHash-128 ([8b91308](https://github.com/DanySK/noncrypto-hash-kt/commit/8b913088c422e3ba41806be61472b5eff44b5616))
+* implement XXHash32 ([3f34552](https://github.com/DanySK/noncrypto-hash-kt/commit/3f34552e58b1d3e61cd8b4efe5c0f7a040ee3fc3))
+* initial API and general-purpose operations ([a9b19e3](https://github.com/DanySK/noncrypto-hash-kt/commit/a9b19e3ea89036b53bfa7e8ab285e4a759bdc262))
+
+### General maintenance
+
+* sort members, create AGENTS.md ([13951f1](https://github.com/DanySK/noncrypto-hash-kt/commit/13951f1af634724b492b1d75474a32ebf840e718))
+
 ## [0.3.15](https://github.com/DanySK/template-for-kotlin-multiplatform-projects/compare/0.3.14...0.3.15) (2026-11-06)
 
 ### Dependency updates
