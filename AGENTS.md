@@ -37,6 +37,15 @@ Prefer `const val` for constants used on hot paths, so that they are inlined.
 The structured encoding of `updateValue` is part of the stability contract: changing it changes every structured hash.
 Never renumber the tags in `ValueTag`; append new ones at the end.
 
+## Benchmarks
+
+The `benchmarks` subproject measures speed and memory of every hash function on every target the host can run.
+- Register every new `HashFunction` in `benchmarks/src/commonMain/kotlin/org/danilopianini/noncryptohash/benchmarks/Algorithms.kt`.
+- `./gradlew benchmark -Pbenchmark.quick=true` is a smoke run: use it to check that the benchmarks still work. Its results go to `benchmarks/build/benchmarks/site`, never to `docs`.
+- `./gradlew benchmark` is a full run, which takes several minutes and appends its results to `docs/benchmarks`, published as a GitHub page. Run it only when asked, on an otherwise idle machine, and commit the new result files with `chore(benchmarks): ...`.
+- Never edit or delete published results by hand.
+- Published results must not identify the machine beyond its hardware and OS: do not add hostnames, user names, or paths.
+
 ## Code style
 
 Preserve the existing structure. Keep changes small, local, and consistent with the style already used in the touched files. Avoid mixing unrelated refactors into a focused fix.

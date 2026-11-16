@@ -27,3 +27,5 @@ gitHooks {
 }
 
 rootProject.name = "noncrypto-hash-kt"
+
+include("benchmarks")

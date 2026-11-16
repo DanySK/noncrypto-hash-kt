@@ -1,4 +1,4 @@
-package org.danilopianini.noncryptohash
+package org.danilopianini.noncryptohash.murmur3
 
 import kotlin.test.Test
 import kotlin.test.assertContentEquals

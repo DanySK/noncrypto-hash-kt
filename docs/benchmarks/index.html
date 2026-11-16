@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hash Benchmarks</title>
+  <meta name="description" content="Speed and memory of the noncrypto-hash-kt hash functions on every Kotlin target.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="viz-root">
+    <header>
+      <h1>noncrypto-hash-kt benchmarks</h1>
+      <p class="lede">Speed and memory use of each hash function, on every Kotlin Multiplatform target, measured on the machine described below.</p>
+    </header>
+
+    <div class="controls">
+      <label for="run">Run</label>
+      <select id="run"></select>
+    </div>
+
+    <section id="summary" aria-label="Run details"></section>
+
+    <section aria-labelledby="speed-title">
+      <h2 id="speed-title">Speed</h2>
+      <div class="controls" role="group" aria-label="Workload" id="workloads"></div>
+      <p class="metric" id="metric"></p>
+      <div class="legend" id="legend"></div>
+      <div class="panels" id="panels"></div>
+    </section>
+
+    <section aria-labelledby="memory-title">
+      <h2 id="memory-title">Memory</h2>
+      <p class="metric">Bytes retained by one digest in its initial state. Lower is better.</p>
+      <div class="table-wrap" id="footprints"></div>
+    </section>
+
+    <section aria-labelledby="all-title">
+      <h2 id="all-title">All results</h2>
+      <details>
+        <summary>Show the table of every measurement</summary>
+        <div class="table-wrap" id="all"></div>
+      </details>
+    </section>
+
+    <section aria-labelledby="method-title">
+      <h2 id="method-title">Methodology</h2>
+      <ul class="method">
+        <li>Each target runs a program compiled for release (JVM, JS and Wasm on Node.js, Kotlin/Native), one target at a time.</li>
+        <li>Each measurement warms up while calibrating a batch size, then times several batches. The figure shown is the median batch; the table also reports the fastest and slowest.</li>
+        <li>Inputs change at every iteration, and every hash is accumulated into a value printed at the end, so no work can be optimized away.</li>
+        <li>One-shot workloads use <code>HashFunction.hashLong</code>; <em>Long, reused digest</em> resets and reuses one streaming digest.</li>
+        <li>Allocations per operation come from the JVM thread allocation counter; other runtimes do not expose one.</li>
+        <li>Digest footprints come from the allocation counter on the JVM (exact), and from the heap size after garbage collection elsewhere (approximate, averaged over 100,000 digests). WASI exposes no memory statistics.</li>
+        <li>On JavaScript, <code>Long</code> is emulated, so 64-bit algorithms are expected to be slow there.</li>
+      </ul>
+    </section>
+  </main>
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
