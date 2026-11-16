@@ -95,6 +95,17 @@ fun Digest.updateValue(value: Any?): Digest = apply {
  */
 fun Digest.updateValue(value: Any?, registry: FunnelRegistry): Digest = context(registry) { updateValue(value) }
 
+context(registry: FunnelRegistry)
+private fun Digest.updateElements(tag: Byte, elements: Iterator<*>) {
+    update(tag)
+    var count = 0
+    elements.forEach {
+        updateValue(it)
+        count++
+    }
+    update(count)
+}
+
 /**
  * Hashes the final built-in types. Returns false if [value] is not one of them.
  */
@@ -216,8 +227,6 @@ private fun Digest.updateOpen(value: Any) {
     }
 }
 
-private fun Digest.updateText(value: CharSequence): Digest = update(ValueTag.TEXT).update(value).update(value.length)
-
 private inline fun Digest.updateRange(isEmpty: Boolean, tag: Byte, content: Digest.() -> Unit) {
     if (isEmpty) {
         update(ValueTag.EMPTY_RANGE)
@@ -227,13 +236,4 @@ private inline fun Digest.updateRange(isEmpty: Boolean, tag: Byte, content: Dige
     }
 }
 
-context(registry: FunnelRegistry)
-private fun Digest.updateElements(tag: Byte, elements: Iterator<*>) {
-    update(tag)
-    var count = 0
-    elements.forEach {
-        updateValue(it)
-        count++
-    }
-    update(count)
-}
+private fun Digest.updateText(value: CharSequence): Digest = update(ValueTag.TEXT).update(value).update(value.length)

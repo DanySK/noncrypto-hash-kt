@@ -25,6 +25,11 @@ class FunnelRegistry private constructor(private val ordered: List<Pair<KClass<*
     val types: List<KClass<*>> get() = ordered.map { it.first }
 
     /**
+     * A new registry with the funnels of this one, followed by those added in [configuration].
+     */
+    fun extend(configuration: Builder.() -> Unit): FunnelRegistry = Builder(ordered).apply(configuration).build()
+
+    /**
      * The funnel for [value], or null if none applies.
      */
     fun funnelFor(value: Any): Funnel<Any>? = when {
@@ -38,11 +43,13 @@ class FunnelRegistry private constructor(private val ordered: List<Pair<KClass<*
     class Builder internal constructor(initial: List<Pair<KClass<*>, Funnel<Any?>>>) {
         private val funnels = initial.toMutableList()
 
+        internal fun build() = FunnelRegistry(funnels.toList())
+
         /**
          * Registers [funnel] for [type] and its subtypes.
          */
         fun <T : Any> register(type: KClass<T>, funnel: Funnel<T>): Builder = apply {
-            @Suppress("UNCHECKED_CAST")
+            @Suppress("UNCHECKED_CAST") // Safe: funnelFor only returns this funnel for instances of type
             funnels += type to (funnel as Funnel<Any?>)
         }
 
@@ -50,14 +57,7 @@ class FunnelRegistry private constructor(private val ordered: List<Pair<KClass<*
          * Registers [funnel] for [T] and its subtypes.
          */
         inline fun <reified T : Any> register(funnel: Funnel<T>): Builder = register(T::class, funnel)
-
-        internal fun build() = FunnelRegistry(funnels.toList())
     }
-
-    /**
-     * A new registry with the funnels of this one, followed by those added in [configuration].
-     */
-    fun extend(configuration: Builder.() -> Unit): FunnelRegistry = Builder(ordered).apply(configuration).build()
 
     /**
      * Factory and the empty registry.

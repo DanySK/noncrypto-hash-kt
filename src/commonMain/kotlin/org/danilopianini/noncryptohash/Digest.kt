@@ -33,14 +33,14 @@ interface Digest {
     val bits: Int
 
     /**
-     * Absorbs [length] bytes of [bytes], starting at [offset].
+     * The digest as a newly allocated array of `bits / 8` bytes. See [digestInto].
      */
-    fun update(bytes: ByteArray, offset: Int = 0, length: Int = bytes.size - offset): Digest
+    fun digest(): ByteArray = ByteArray(bits / Byte.SIZE_BITS).also { digestInto(it) }
 
     /**
-     * Absorbs a single byte.
+     * The low 32 bits of the digest. Does **not** modify the state.
      */
-    fun update(value: Byte): Digest
+    fun digestInt(): Int = digestLong().toInt()
 
     /**
      * Writes the `bits / 8` bytes of the digest into [destination], starting at [offset],
@@ -61,14 +61,14 @@ interface Digest {
     fun reset(): Digest
 
     /**
-     * The digest as a newly allocated array of `bits / 8` bytes. See [digestInto].
+     * Absorbs [length] bytes of [bytes], starting at [offset].
      */
-    fun digest(): ByteArray = ByteArray(bits / Byte.SIZE_BITS).also { digestInto(it) }
+    fun update(bytes: ByteArray, offset: Int = 0, length: Int = bytes.size - offset): Digest
 
     /**
-     * The low 32 bits of the digest. Does **not** modify the state.
+     * Absorbs a single byte.
      */
-    fun digestInt(): Int = digestLong().toInt()
+    fun update(value: Byte): Digest
 
     /**
      * Absorbs one byte: `1` for `true`, `0` for `false`.
@@ -129,7 +129,7 @@ interface Digest {
      * Absorbs the characters of [value] between [start] (inclusive) and [end] (exclusive), encoded as UTF-8,
      * with no allocation and no length information.
      */
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber") // UTF-8 bit masks and code point boundaries, clearer as literals
     fun update(value: CharSequence, start: Int = 0, end: Int = value.length): Digest {
         var index = start
         while (index < end) {
