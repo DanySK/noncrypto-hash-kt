@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/DanySK/noncrypto-hash-kt/compare/1.0.0...1.1.0) (2026-11-16)
+
+### Features
+
+* implement XXHash64 ([85246ff](https://github.com/DanySK/noncrypto-hash-kt/commit/85246ff970cf5f520b50d870d2598a4e0a6bcae6))
+
 ## 1.0.0 (2026-11-16)
 
 ### ⚠ BREAKING CHANGES
