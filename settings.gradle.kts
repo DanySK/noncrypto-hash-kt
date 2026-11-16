@@ -26,4 +26,4 @@ gitHooks {
     createHooks(overwriteExisting = true)
 }
 
-rootProject.name = "Template-for-Kotlin-Multiplatform-Projects".lowercase()
+rootProject.name = "noncrypto-hash-kt"
