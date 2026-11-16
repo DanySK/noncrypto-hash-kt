@@ -1,6 +1,8 @@
 package org.danilopianini.noncryptohash.murmur3
 
 import org.danilopianini.noncryptohash.Digest
+import org.danilopianini.noncryptohash.requireRange
+import org.danilopianini.noncryptohash.requireRoom
 
 /**
  * Streaming [MurmurHash128] with the given [seed], zero-extended to 64 bits.
@@ -24,9 +26,7 @@ class MurmurHash128Digest(val seed: Int = 0) : Digest {
     override val bits: Int = BITS
 
     override fun digestInto(destination: ByteArray, offset: Int) {
-        require(offset >= 0 && destination.size - offset >= BYTES) {
-            "Need $BYTES bytes from offset $offset, but the destination has size ${destination.size}"
-        }
+        requireRoom(destination, offset, BYTES)
         finalize { high, low ->
             writeBigEndian(high, destination, offset)
             writeBigEndian(low, destination, offset + Long.SIZE_BYTES)
@@ -45,9 +45,7 @@ class MurmurHash128Digest(val seed: Int = 0) : Digest {
     }
 
     override fun update(bytes: ByteArray, offset: Int, length: Int): Digest = apply {
-        require(offset >= 0 && length >= 0 && offset <= bytes.size - length) {
-            "Invalid range: offset $offset, length $length, size ${bytes.size}"
-        }
+        requireRange(bytes, offset, length)
         var index = offset
         val end = offset + length
         // Complete the pending block, if any

@@ -1,9 +1,10 @@
 package org.danilopianini.noncryptohash.murmur3
 
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import org.danilopianini.noncryptohash.DigestContract
+import org.danilopianini.noncryptohash.testInput
+import org.danilopianini.noncryptohash.toHex
 
 /**
  * Reference vectors generated with Guava's `Hashing.murmur3_128` (non-negative seeds)
@@ -165,7 +166,7 @@ class MurmurHash128Test {
     @Test
     fun `byte arrays match the reference vectors in one shot`() {
         byteVectors.forEach { (size, seed, hex, low) ->
-            val input = input(size)
+            val input = testInput(size)
             assertEquals(low, MurmurHash128(seed).hashLong(input), "size $size, seed $seed")
             assertEquals(hex, MurmurHash128(seed).newDigest().update(input).digest().toHex(), "size $size, seed $seed")
         }
@@ -174,49 +175,15 @@ class MurmurHash128Test {
     @Test
     fun `byte arrays match the reference vectors in any chunking`() {
         byteVectors.forEach { (size, seed, hex, _) ->
-            val input = input(size)
-            listOf(1, 3, 7, 8, 15, 16, 17).forEach { chunk ->
-                val digest = MurmurHash128Digest(seed)
-                input.indices.step(chunk).forEach { start -> digest.update(input, start, minOf(chunk, size - start)) }
-                assertEquals(hex, digest.digest().toHex(), "size $size, seed $seed, chunk $chunk")
-            }
+            DigestContract {
+                MurmurHash128Digest(seed)
+            }.assertChunkingDoesNotMatter(testInput(size), hex, "size $size, seed $seed")
         }
     }
 
     @Test
-    fun `digesting does not alter the state`() {
-        val digest = MurmurHash128Digest().update(input(20))
-        val first = digest.digest()
-        digest.digestLong()
-        assertContentEquals(first, digest.digest())
-        digest.update(input(5))
-        assertContentEquals(MurmurHash128Digest().update(input(20)).update(input(5)).digest(), digest.digest())
-    }
-
-    @Test
-    fun `digest into honors the offset and rejects short destinations`() {
-        val digest = MurmurHash128Digest().update("abc")
-        val destination = ByteArray(20)
-        digest.digestInto(destination, 3)
-        assertContentEquals(digest.digest(), destination.copyOfRange(3, 19))
-        assertFailsWith<IllegalArgumentException> { digest.digestInto(ByteArray(16), 1) }
-    }
-
-    @Test
-    fun `fixed width updates match their little-endian bytes at every alignment`() {
-        (0 until 16).forEach { prefix ->
-            val values = listOf(0x0123_4567_89AB_CDEFL, -1L, 0x8000_0000_0000_0001UL.toLong())
-            values.forEach { value ->
-                val expected = MurmurHash128Digest(7).update(input(prefix))
-                val actual = MurmurHash128Digest(7).update(input(prefix))
-                expected.update(ByteArray(Long.SIZE_BYTES) { (value ushr (it * Byte.SIZE_BITS)).toByte() })
-                    .update(ByteArray(Int.SIZE_BYTES) { (value ushr (it * Byte.SIZE_BITS)).toByte() })
-                    .update(ByteArray(Short.SIZE_BYTES) { (value ushr (it * Byte.SIZE_BITS)).toByte() })
-                    .update(byteArrayOf(value.toByte()))
-                actual.update(value).update(value.toInt()).update(value.toShort()).update(value.toByte())
-                assertEquals(expected.digest().toHex(), actual.digest().toHex(), "prefix $prefix, value $value")
-            }
-        }
+    fun `the digest honors the shared contract`() {
+        listOf(0, 7, -1).forEach { seed -> DigestContract { MurmurHash128Digest(seed) }.assertAll() }
     }
 
     @Test
@@ -225,13 +192,6 @@ class MurmurHash128Test {
             MurmurHash128(-1).hashLong("abc"),
             textVectors.single { it.input == "abc" && it.seed == -1 }.low,
         )
-    }
-
-    @Test
-    fun `resetting restores the seeded initial state`() {
-        val digest = MurmurHash128Digest(42).update(input(33))
-        digest.reset()
-        assertContentEquals(MurmurHash128Digest(42).update("abc").digest(), digest.update("abc").digest())
     }
 
     @Test
@@ -247,10 +207,6 @@ class MurmurHash128Test {
         assertEquals(128, MurmurHash128().bits)
         assertEquals(16, MurmurHash128Digest().digest().size)
     }
-
-    private fun ByteArray.toHex(): String = joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
-
-    private fun input(size: Int): ByteArray = ByteArray(size) { (it * 37 + 11).toByte() }
 
     private data class Vector<T>(val input: T, val seed: Int, val hex: String, val low: Long)
 }
