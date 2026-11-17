@@ -1,3 +1,13 @@
+## [1.2.0](https://github.com/DanySK/noncrypto-hash-kt/compare/1.1.1...1.2.0) (2026-11-17)
+
+### Features
+
+* add MurmurHash3 x86_32, MurmurHash2, FNV-1a, CRC-32/32C, SipHash, XXH3 and XXH128 ([6421282](https://github.com/DanySK/noncrypto-hash-kt/commit/6421282cbbce80402cef2426a43111409c4efbb3))
+
+### Documentation
+
+* add a few preview benchmark results ([f5ab122](https://github.com/DanySK/noncrypto-hash-kt/commit/f5ab122f372a383dc085bfaf57e71a3691a031aa))
+
 ## [1.1.1](https://github.com/DanySK/noncrypto-hash-kt/compare/1.1.0...1.1.1) (2026-11-17)
 
 ### Documentation
