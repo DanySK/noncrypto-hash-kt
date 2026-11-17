@@ -68,24 +68,26 @@ class XxHash64Digest(val seed: Long = 0) : LongLaneDigest() {
     }
 
     override fun digestLong(): Long {
-        var hash = if (length >= STRIPE) converge(acc1, acc2, acc3, acc4) else seed + P5
-        hash += length
+        var hash = (if (length >= STRIPE) converge(acc1, acc2, acc3, acc4) else seed + P5) + length
         // The pending bytes are the tail: whole lanes first, then a half lane, then single bytes
-        var lane = 0
-        var remaining = buffered
-        while (remaining >= Long.SIZE_BYTES) {
-            hash = tailLane(hash, pending(lane++))
-            remaining -= Long.SIZE_BYTES
+        val lanes = buffered ushr LANE_SHIFT
+        if (lanes > 0) {
+            hash = tailLane(hash, lane1)
         }
-        var bytes = pending(lane)
-        if (remaining >= Int.SIZE_BYTES) {
-            hash = tailHalfLane(hash, bytes and INT_MASK)
-            bytes = bytes ushr Int.SIZE_BITS
-            remaining -= Int.SIZE_BYTES
+        if (lanes > 1) {
+            hash = tailLane(hash, lane2)
         }
-        repeat(remaining) {
-            hash = tailByte(hash, bytes and BYTE_MASK)
-            bytes = bytes ushr Byte.SIZE_BITS
+        if (lanes > 2) {
+            hash = tailLane(hash, lane3)
+        }
+        var rest = pending(lanes)
+        if ((buffered and Int.SIZE_BYTES) != 0) {
+            hash = tailHalfLane(hash, rest and INT_MASK)
+            rest = rest ushr Int.SIZE_BITS
+        }
+        repeat(buffered and HALF_LANE_MASK) {
+            hash = tailByte(hash, rest and BYTE_MASK)
+            rest = rest ushr Byte.SIZE_BITS
         }
         return avalanche(hash)
     }
@@ -151,6 +153,7 @@ class XxHash64Digest(val seed: Long = 0) : LongLaneDigest() {
         const val INT_MASK: Long = 0xFFFF_FFFFL
         private const val LANE_SHIFT: Int = 3
         private const val LANE_MASK: Int = 7
+        private const val HALF_LANE_MASK: Int = 3
         private const val ROUND_ROTATION: Int = 31
         private const val TAIL_BYTE_ROTATION: Int = 11
         private const val TAIL_HALF_LANE_ROTATION: Int = 23

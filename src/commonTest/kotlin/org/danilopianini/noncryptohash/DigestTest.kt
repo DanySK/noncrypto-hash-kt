@@ -40,6 +40,23 @@ class DigestTest {
     }
 
     @Test
+    fun `text mixing ASCII runs of any length with other characters is absorbed as UTF-8`() {
+        val others = listOf("é", "€", "😀")
+        (0..9).forEach { before ->
+            (0..9).forEach { after ->
+                others.forEach { other ->
+                    val text = "a".repeat(before) + other + "b".repeat(after) + other
+                    assertEquals(text.encodeToByteArray().toList(), raw { update(text) }, text)
+                    val unpaired = "c".repeat(before) + "\uD83D" + "d".repeat(after)
+                    val expected = bytes(*IntArray(before) { 'c'.code }) + bytes(0xEF, 0xBF, 0xBD) +
+                        bytes(*IntArray(after) { 'd'.code })
+                    assertEquals(expected, raw { update(unpaired) }, "unpaired after $before characters")
+                }
+            }
+        }
+    }
+
+    @Test
     fun `well-formed text is absorbed as its UTF-8 encoding`() {
         listOf("", "abc", "àèìòù", "€uro", "日本語", "emoji 😀 ok").forEach { text ->
             assertEquals(text.encodeToByteArray().toList(), raw { update(text) }, text)

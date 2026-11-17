@@ -6,7 +6,7 @@ package org.danilopianini.noncryptohash
  * The `update` methods are a *raw byte sink*: values are absorbed with no framing, type tags or length
  * information, so that results match the reference test vectors of each algorithm.
  * For example, `update("ab").update("c")` and `update("abc")` produce the same digest.
- * Use [updateValue] to hash structured values unambiguously.
+ * Use [org.danilopianini.noncryptohash.common.updateValue] to hash structured values unambiguously.
  *
  * Byte layout, identical on every target:
  * - multi-byte integers are absorbed **little-endian**, using exactly their width
@@ -128,39 +128,79 @@ interface Digest {
     /**
      * Absorbs the characters of [value] between [start] (inclusive) and [end] (exclusive), encoded as UTF-8,
      * with no allocation and no length information.
+     * Runs of ASCII characters are absorbed four at a time, as little-endian `Int`s: the same bytes, in fewer calls.
      */
-    @Suppress("MagicNumber") // UTF-8 bit masks and code point boundaries, clearer as literals
     fun update(value: CharSequence, start: Int = 0, end: Int = value.length): Digest {
         var index = start
         while (index < end) {
-            val char = value[index++]
-            val code = char.code
-            when {
-                code < 0x80 -> update(code.toByte())
-                code < 0x800 -> {
-                    update((0xC0 or (code ushr 6)).toByte())
-                    update((0x80 or (code and 0x3F)).toByte())
-                }
-                char.isHighSurrogate() && index < end && value[index].isLowSurrogate() -> {
-                    val codePoint = 0x10000 + ((code - 0xD800) shl 10) + (value[index++].code - 0xDC00)
-                    update((0xF0 or (codePoint ushr 18)).toByte())
-                    update((0x80 or ((codePoint ushr 12) and 0x3F)).toByte())
-                    update((0x80 or ((codePoint ushr 6) and 0x3F)).toByte())
-                    update((0x80 or (codePoint and 0x3F)).toByte())
-                }
-                char.isSurrogate() -> {
-                    // Unpaired surrogate: U+FFFD REPLACEMENT CHARACTER
-                    update(0xEF.toByte())
-                    update(0xBF.toByte())
-                    update(0xBD.toByte())
-                }
-                else -> {
-                    update((0xE0 or (code ushr 12)).toByte())
-                    update((0x80 or ((code ushr 6) and 0x3F)).toByte())
-                    update((0x80 or (code and 0x3F)).toByte())
+            if (end - index >= Int.SIZE_BYTES) {
+                val word = asciiWord(value, index)
+                if (word != NOT_ASCII) {
+                    update(word)
+                    index += Int.SIZE_BYTES
+                    continue
                 }
             }
+            index = updateCodePoint(value, index, end)
         }
         return this
     }
+
+    /**
+     * The four characters of [value] from [index], packed little-endian, or [NOT_ASCII] if any of them is not ASCII.
+     */
+    @Suppress("MagicNumber") // Byte positions within the packed word
+    private fun asciiWord(value: CharSequence, index: Int): Int {
+        val first = value[index].code
+        val second = value[index + 1].code
+        val third = value[index + 2].code
+        val fourth = value[index + 3].code
+        return if ((first or second or third or fourth) < 0x80) {
+            first or (second shl 8) or (third shl 16) or (fourth shl 24)
+        } else {
+            NOT_ASCII
+        }
+    }
+
+    /**
+     * Absorbs the UTF-8 encoding of the code point of [value] at [index], and returns the index of the next one.
+     */
+    @Suppress("MagicNumber") // UTF-8 bit masks and code point boundaries, clearer as literals
+    private fun updateCodePoint(value: CharSequence, index: Int, end: Int): Int {
+        val char = value[index]
+        val code = char.code
+        var next = index + 1
+        when {
+            code < 0x80 -> update(code.toByte())
+            code < 0x800 -> {
+                update((0xC0 or (code ushr 6)).toByte())
+                update((0x80 or (code and 0x3F)).toByte())
+            }
+            char.isHighSurrogate() && next < end && value[next].isLowSurrogate() -> {
+                val codePoint = 0x10000 + ((code - 0xD800) shl 10) + (value[next++].code - 0xDC00)
+                update((0xF0 or (codePoint ushr 18)).toByte())
+                update((0x80 or ((codePoint ushr 12) and 0x3F)).toByte())
+                update((0x80 or ((codePoint ushr 6) and 0x3F)).toByte())
+                update((0x80 or (codePoint and 0x3F)).toByte())
+            }
+            char.isSurrogate() -> {
+                // Unpaired surrogate: U+FFFD REPLACEMENT CHARACTER
+                update(0xEF.toByte())
+                update(0xBF.toByte())
+                update(0xBD.toByte())
+            }
+            else -> {
+                update((0xE0 or (code ushr 12)).toByte())
+                update((0x80 or ((code ushr 6) and 0x3F)).toByte())
+                update((0x80 or (code and 0x3F)).toByte())
+            }
+        }
+        return next
+    }
 }
+
+/**
+ * Marks a group of four characters that is not entirely ASCII:
+ * packed ASCII words never have the high bit of any byte set.
+ */
+private const val NOT_ASCII: Int = -1
