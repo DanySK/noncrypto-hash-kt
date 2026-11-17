@@ -1,6 +1,7 @@
 package org.danilopianini.noncryptohash.xxhash
 
 import org.danilopianini.noncryptohash.HashFunction
+import org.danilopianini.noncryptohash.common.readIntLittleEndian
 import org.danilopianini.noncryptohash.common.requireRange
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.P1
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.P2
@@ -8,7 +9,6 @@ import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.P5
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.STRIPE
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.avalanche
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.converge
-import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.readLittleEndian
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.round
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.tailByte
 import org.danilopianini.noncryptohash.xxhash.XxHash32Digest.Companion.tailWord
@@ -42,10 +42,10 @@ class XxHash32(val seed: Int = 0) : HashFunction {
             var v3 = seed
             var v4 = seed - P1
             while (end - index >= STRIPE) {
-                v1 = round(v1, readLittleEndian(bytes, index))
-                v2 = round(v2, readLittleEndian(bytes, index + Int.SIZE_BYTES))
-                v3 = round(v3, readLittleEndian(bytes, index + 2 * Int.SIZE_BYTES))
-                v4 = round(v4, readLittleEndian(bytes, index + 3 * Int.SIZE_BYTES))
+                v1 = round(v1, readIntLittleEndian(bytes, index))
+                v2 = round(v2, readIntLittleEndian(bytes, index + Int.SIZE_BYTES))
+                v3 = round(v3, readIntLittleEndian(bytes, index + 2 * Int.SIZE_BYTES))
+                v4 = round(v4, readIntLittleEndian(bytes, index + 3 * Int.SIZE_BYTES))
                 index += STRIPE
             }
             converge(v1, v2, v3, v4)
@@ -54,7 +54,7 @@ class XxHash32(val seed: Int = 0) : HashFunction {
         }
         hash += length
         while (end - index >= Int.SIZE_BYTES) {
-            hash = tailWord(hash, readLittleEndian(bytes, index))
+            hash = tailWord(hash, readIntLittleEndian(bytes, index))
             index += Int.SIZE_BYTES
         }
         while (index < end) {

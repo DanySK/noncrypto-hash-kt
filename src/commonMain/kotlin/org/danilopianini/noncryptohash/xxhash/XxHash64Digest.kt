@@ -3,7 +3,9 @@ package org.danilopianini.noncryptohash.xxhash
 import org.danilopianini.noncryptohash.Digest
 import org.danilopianini.noncryptohash.common.LongLaneDigest
 import org.danilopianini.noncryptohash.common.absorbInBlocks
+import org.danilopianini.noncryptohash.common.readLongLittleEndian
 import org.danilopianini.noncryptohash.common.requireRoom
+import org.danilopianini.noncryptohash.common.writeLongBigEndian
 
 /**
  * Streaming [XxHash64] with the given [seed].
@@ -61,10 +63,7 @@ class XxHash64Digest(val seed: Long = 0) : LongLaneDigest() {
 
     override fun digestInto(destination: ByteArray, offset: Int) {
         requireRoom(destination, offset, Long.SIZE_BYTES)
-        val hash = digestLong()
-        for (byte in 0 until Long.SIZE_BYTES) {
-            destination[offset + byte] = (hash ushr ((Long.SIZE_BYTES - 1 - byte) * Byte.SIZE_BITS)).toByte()
-        }
+        writeLongBigEndian(digestLong(), destination, offset)
     }
 
     override fun digestLong(): Long {
@@ -112,10 +111,10 @@ class XxHash64Digest(val seed: Long = 0) : LongLaneDigest() {
             var c = acc3
             var d = acc4
             for (index in start until end step STRIPE) {
-                a = round(a, readLong(bytes, index))
-                b = round(b, readLong(bytes, index + Long.SIZE_BYTES))
-                c = round(c, readLong(bytes, index + 2 * Long.SIZE_BYTES))
-                d = round(d, readLong(bytes, index + 3 * Long.SIZE_BYTES))
+                a = round(a, readLongLittleEndian(bytes, index))
+                b = round(b, readLongLittleEndian(bytes, index + Long.SIZE_BYTES))
+                c = round(c, readLongLittleEndian(bytes, index + 2 * Long.SIZE_BYTES))
+                d = round(d, readLongLittleEndian(bytes, index + 3 * Long.SIZE_BYTES))
             }
             acc1 = a
             acc2 = b
@@ -177,22 +176,6 @@ class XxHash64Digest(val seed: Long = 0) : LongLaneDigest() {
             hash = merge(hash, acc2)
             hash = merge(hash, acc3)
             return merge(hash, acc4)
-        }
-
-        fun readInt(bytes: ByteArray, index: Int): Long {
-            var result = 0L
-            for (byte in Int.SIZE_BYTES - 1 downTo 0) {
-                result = (result shl Byte.SIZE_BITS) or (bytes[index + byte].toLong() and BYTE_MASK)
-            }
-            return result
-        }
-
-        fun readLong(bytes: ByteArray, index: Int): Long {
-            var result = 0L
-            for (byte in Long.SIZE_BYTES - 1 downTo 0) {
-                result = (result shl Byte.SIZE_BITS) or (bytes[index + byte].toLong() and BYTE_MASK)
-            }
-            return result
         }
 
         fun tailByte(hash: Long, byte: Long): Long = (hash xor byte * P5).rotateLeft(TAIL_BYTE_ROTATION) * P1

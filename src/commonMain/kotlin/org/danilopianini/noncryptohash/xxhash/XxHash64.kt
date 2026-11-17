@@ -1,16 +1,17 @@
 package org.danilopianini.noncryptohash.xxhash
 
 import org.danilopianini.noncryptohash.HashFunction
+import org.danilopianini.noncryptohash.common.readIntLittleEndian
+import org.danilopianini.noncryptohash.common.readLongLittleEndian
 import org.danilopianini.noncryptohash.common.requireRange
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.BYTE_MASK
+import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.INT_MASK
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.P1
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.P2
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.P5
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.STRIPE
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.avalanche
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.converge
-import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.readInt
-import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.readLong
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.round
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.tailByte
 import org.danilopianini.noncryptohash.xxhash.XxHash64Digest.Companion.tailHalfLane
@@ -41,10 +42,10 @@ class XxHash64(val seed: Long = 0) : HashFunction {
             var acc3 = seed
             var acc4 = seed - P1
             while (end - index >= STRIPE) {
-                acc1 = round(acc1, readLong(bytes, index))
-                acc2 = round(acc2, readLong(bytes, index + Long.SIZE_BYTES))
-                acc3 = round(acc3, readLong(bytes, index + 2 * Long.SIZE_BYTES))
-                acc4 = round(acc4, readLong(bytes, index + 3 * Long.SIZE_BYTES))
+                acc1 = round(acc1, readLongLittleEndian(bytes, index))
+                acc2 = round(acc2, readLongLittleEndian(bytes, index + Long.SIZE_BYTES))
+                acc3 = round(acc3, readLongLittleEndian(bytes, index + 2 * Long.SIZE_BYTES))
+                acc4 = round(acc4, readLongLittleEndian(bytes, index + 3 * Long.SIZE_BYTES))
                 index += STRIPE
             }
             converge(acc1, acc2, acc3, acc4)
@@ -53,11 +54,11 @@ class XxHash64(val seed: Long = 0) : HashFunction {
         }
         hash += length
         while (end - index >= Long.SIZE_BYTES) {
-            hash = tailLane(hash, readLong(bytes, index))
+            hash = tailLane(hash, readLongLittleEndian(bytes, index))
             index += Long.SIZE_BYTES
         }
         if (end - index >= Int.SIZE_BYTES) {
-            hash = tailHalfLane(hash, readInt(bytes, index))
+            hash = tailHalfLane(hash, readIntLittleEndian(bytes, index).toLong() and INT_MASK)
             index += Int.SIZE_BYTES
         }
         while (index < end) {

@@ -18,8 +18,19 @@ with the machine each run was executed on.
 
 | Algorithm | Class | Bits | Notes |
 |---|---|---|---|
+| CRC-32 | `crc.Crc32` | 32 | Checksum of zip, gzip, and PNG; matches `java.util.zip.CRC32` |
+| CRC-32C | `crc.Crc32c` | 32 | Checksum of iSCSI, ext4, and Kafka; matches `java.util.zip.CRC32C` |
+| FNV-1a, 32-bit | `fnv.Fnv1a32` | 32 | No seed; fastest for keys of a few bytes, slow on long inputs |
+| FNV-1a, 64-bit | `fnv.Fnv1a64` | 64 | No seed; fastest for keys of a few bytes, slow on long inputs |
+| MurmurHash2, 32-bit | `murmur2.MurmurHash2` | 32 | For compatibility, e.g., with Kafka's partitioner (`KAFKA_SEED`); digests buffer the whole input |
 | MurmurHash3, x64 128-bit | `murmur3.MurmurHash128` | 128 | Matches the reference implementation, and Guava's `murmur3_128` for non-negative seeds |
+| MurmurHash3, x86 32-bit | `murmur3.MurmurHash32` | 32 | 32-bit arithmetic only; matches Guava's `murmur3_32_fixed` |
+| SipHash-1-3 | `siphash.SipHash13` | 64 | Keyed, resists hash flooding; as in the hash tables of Rust and Python |
+| SipHash-2-4 | `siphash.SipHash24` | 64 | Keyed, resists hash flooding; matches Guava's `sipHash24` |
 | xxHash, 32-bit (XXH32) | `xxhash.XxHash32` | 32 | 32-bit arithmetic only, so the fastest choice on JavaScript |
+| xxHash, 64-bit (XXH64) | `xxhash.XxHash64` | 64 | Fast on 64-bit targets |
+| xxHash3, 64-bit (XXH3) | `xxhash.XxHash3` | 64 | Fastest on short keys on 64-bit targets; digests buffer up to 256 bytes |
+| xxHash3, 128-bit (XXH128) | `xxhash.XxHash128` | 128 | As XXH3, with a 128-bit hash |
 
 All classes are in the `org.danilopianini.noncryptohash` package, and are validated against the test vectors
 of their reference implementation.

@@ -3,7 +3,9 @@ package org.danilopianini.noncryptohash.murmur3
 import org.danilopianini.noncryptohash.Digest
 import org.danilopianini.noncryptohash.common.LongLaneDigest
 import org.danilopianini.noncryptohash.common.absorbInBlocks
+import org.danilopianini.noncryptohash.common.readLongLittleEndian
 import org.danilopianini.noncryptohash.common.requireRoom
+import org.danilopianini.noncryptohash.common.writeLongBigEndian
 
 /**
  * Streaming [MurmurHash128] with the given [seed], zero-extended to 64 bits.
@@ -54,8 +56,8 @@ class MurmurHash128Digest(val seed: Int = 0) : LongLaneDigest() {
     override fun digestInto(destination: ByteArray, offset: Int) {
         requireRoom(destination, offset, BYTES)
         finalize { high, low ->
-            writeBigEndian(high, destination, offset)
-            writeBigEndian(low, destination, offset + Long.SIZE_BYTES)
+            writeLongBigEndian(high, destination, offset)
+            writeLongBigEndian(low, destination, offset + Long.SIZE_BYTES)
         }
     }
 
@@ -73,7 +75,7 @@ class MurmurHash128Digest(val seed: Int = 0) : LongLaneDigest() {
     override fun update(bytes: ByteArray, offset: Int, length: Int): Digest = apply {
         absorbInBlocks(bytes, offset, length, BYTES, { buffered != 0 }, { absorb(it.toLong(), 1) }) { start, end ->
             for (index in start until end step BYTES) {
-                mixBlock(readLittleEndian(bytes, index), readLittleEndian(bytes, index + Long.SIZE_BYTES))
+                mixBlock(readLongLittleEndian(bytes, index), readLongLittleEndian(bytes, index + Long.SIZE_BYTES))
             }
             this.length += end - start
         }
@@ -109,7 +111,6 @@ class MurmurHash128Digest(val seed: Int = 0) : LongLaneDigest() {
     internal companion object {
         const val BITS: Int = 128
         private const val BYTES: Int = BITS / Byte.SIZE_BITS
-        private const val BYTE_MASK: Long = 0xFF
         private const val INT_MASK: Long = 0xFFFF_FFFFL
         private const val C1: Long = -0x783c_846e_eebd_ac2bL // 0x87c37b91114253d5
         private const val C2: Long = 0x4cf5_ad43_2745_937fL
@@ -135,19 +136,5 @@ class MurmurHash128Digest(val seed: Int = 0) : LongLaneDigest() {
         private fun mixK1(k: Long): Long = (k * C1).rotateLeft(K1_ROTATION) * C2
 
         private fun mixK2(k: Long): Long = (k * C2).rotateLeft(K2_ROTATION) * C1
-
-        private fun readLittleEndian(bytes: ByteArray, index: Int): Long {
-            var result = 0L
-            for (byte in Long.SIZE_BYTES - 1 downTo 0) {
-                result = (result shl Byte.SIZE_BITS) or (bytes[index + byte].toLong() and BYTE_MASK)
-            }
-            return result
-        }
-
-        private fun writeBigEndian(value: Long, destination: ByteArray, offset: Int) {
-            for (byte in 0 until Long.SIZE_BYTES) {
-                destination[offset + byte] = (value ushr ((Long.SIZE_BYTES - 1 - byte) * Byte.SIZE_BITS)).toByte()
-            }
-        }
     }
 }

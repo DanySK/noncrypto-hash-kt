@@ -13,7 +13,7 @@ internal class DigestContract(private val newDigest: () -> Digest) {
      * Checks that absorbing [input] in chunks of any size gives [expectedHex].
      */
     fun assertChunkingDoesNotMatter(input: ByteArray, expectedHex: String, message: String) {
-        listOf(1, 3, 4, 7, 8, 15, 16, 17, 31, 32, 33).forEach { chunk ->
+        listOf(1, 3, 4, 7, 8, 15, 16, 17, 31, 32, 33, 64, 100, 255, 256, 257, 1000).forEach { chunk ->
             val digest = newDigest()
             input.indices.step(chunk).forEach { start -> digest.update(input, start, minOf(chunk, input.size - start)) }
             assertEquals(expectedHex, digest.digest().toHex(), "$message, chunk $chunk")
