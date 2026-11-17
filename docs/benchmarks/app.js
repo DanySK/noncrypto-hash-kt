@@ -93,12 +93,16 @@ function metricFor(workload) {
       description: "Throughput, median of the measured batches. Higher is better.",
       value: (result) => result.bytesPerSecond,
       format: formatThroughput,
+      // Best first
+      compare: (a, b) => b.bytesPerSecond - a.bytesPerSecond,
     };
   }
   return {
     description: "Time per operation, median of the measured batches. Lower is better.",
     value: (result) => result.nsPerOp.median,
     format: formatTime,
+    // Best first
+    compare: (a, b) => a.nsPerOp.median - b.nsPerOp.median,
   };
 }
 
@@ -198,9 +202,9 @@ function niceTicks(max, count = 3) {
   return ticks;
 }
 
-/* Horizontal bars, one per algorithm, on a linear axis starting at zero. */
+/* Horizontal bars, one per algorithm, from best to worst, on a linear axis starting at zero. */
 function renderPanel(run, target, workload, metric, width) {
-  const results = target.results.filter((result) => result.workload === workload.id);
+  const results = target.results.filter((result) => result.workload === workload.id).sort(metric.compare);
   const panel = element("div", { class: "panel" },
     element("h3", {}, TARGET_NAMES[target.target] || target.target),
     element("p", { class: "runtime" }, target.runtime),
@@ -283,12 +287,15 @@ function table(headers, rows) {
   );
 }
 
+/* Rows from the smallest to the largest total footprint over the targets that measured it. */
 function renderFootprints(run) {
   const targets = targetsOf(run);
-  const rows = algorithmsOf(run).map((algorithm) => [
+  const footprintOf = (target, algorithm) => target.footprints.find((entry) => entry.algorithm === algorithm);
+  const total = (algorithm) => targets.reduce((sum, target) => sum + (footprintOf(target, algorithm)?.bytesPerDigest ?? 0), 0);
+  const rows = algorithmsOf(run).sort((a, b) => total(a) - total(b)).map((algorithm) => [
     [algorithm],
     ...targets.map((target) => {
-      const footprint = target.footprints.find((entry) => entry.algorithm === algorithm);
+      const footprint = footprintOf(target, algorithm);
       if (!footprint || footprint.bytesPerDigest == null) return ["n/a", true];
       const approximate = footprint.method === "allocation counter" ? "" : "≈ ";
       const bytes = approximate ? Math.round(footprint.bytesPerDigest) : footprint.bytesPerDigest;
@@ -298,16 +305,22 @@ function renderFootprints(run) {
   $("footprints").replaceChildren(table([["Algorithm"], ...targets.map((target) => [TARGET_NAMES[target.target] || target.target, true])], rows));
 }
 
+/* Rows grouped by target and workload, in their run order, then from the fastest to the slowest. */
 function renderAll(run) {
-  const rows = targetsOf(run).flatMap((target) => target.results.map((result) => [
-    [result.label],
-    [result.algorithm],
-    [TARGET_NAMES[target.target] || target.target],
-    [formatTime(result.nsPerOp.median), true],
-    [`${formatTime(result.nsPerOp.min)} – ${formatTime(result.nsPerOp.max)}`, true],
-    [formatThroughput(result.bytesPerSecond), true],
-    [result.allocatedBytesPerOp == null ? "n/a" : formatBytes(result.allocatedBytesPerOp), true],
-  ]));
+  const rows = targetsOf(run).flatMap((target) => {
+    const workloads = [...new Set(target.results.map((result) => result.workload))];
+    const sorted = [...target.results].sort((a, b) =>
+      workloads.indexOf(a.workload) - workloads.indexOf(b.workload) || a.nsPerOp.median - b.nsPerOp.median);
+    return sorted.map((result) => [
+      [result.label],
+      [result.algorithm],
+      [TARGET_NAMES[target.target] || target.target],
+      [formatTime(result.nsPerOp.median), true],
+      [`${formatTime(result.nsPerOp.min)} – ${formatTime(result.nsPerOp.max)}`, true],
+      [formatThroughput(result.bytesPerSecond), true],
+      [result.allocatedBytesPerOp == null ? "n/a" : formatBytes(result.allocatedBytesPerOp), true],
+    ]);
+  });
   $("all").replaceChildren(table([
     ["Workload"], ["Algorithm"], ["Target"], ["Median", true], ["Range", true], ["Throughput", true], ["Allocated per op", true],
   ], rows));
