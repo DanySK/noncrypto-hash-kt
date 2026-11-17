@@ -46,6 +46,8 @@ val selectedTargets: Set<String> = providers.gradleProperty("benchmark.targets")
  * passing arguments is not uniformly supported across targets (e.g., WASI).
  */
 val generateBenchmarkConfig = tasks.register("generateBenchmarkConfig") {
+    group = "benchmark"
+    description = "Generates the configuration compiled into the benchmark programs."
     val outputDirectory = layout.buildDirectory.dir("generated/benchmarkConfig/commonMain/kotlin")
     val warmupMillis = if (quick) 50 else 1_000
     val rounds = if (quick) 3 else 7
@@ -277,6 +279,8 @@ tasks.register("benchmark") {
     val siteDirectory = rootProject.layout.projectDirectory.dir("docs/benchmarks")
     val outputDirectory = if (quick) layout.buildDirectory.dir("benchmarks/site") else provider { siteDirectory }
     outputs.upToDateWhen { false }
+    // Computed by gitSemVer in the root project
+    val projectVersion = rootProject.version.toString()
     doLast {
         val now = Instant.now()
         val machine = machineDescription()
@@ -287,6 +291,7 @@ tasks.register("benchmark") {
             "id" to id,
             "date" to now.toString(),
             "quick" to quick,
+            "version" to projectVersion,
             "machine" to machine,
             "commit" to mapOf(
                 "hash" to git("rev-parse", "HEAD"),
@@ -312,6 +317,7 @@ tasks.register("benchmark") {
             mapOf(
                 "id" to it["id"],
                 "date" to it["date"],
+                "version" to it["version"],
                 "machine" to (it["machine"] as Map<*, *>)["label"],
             )
         }

@@ -105,14 +105,22 @@ function metricFor(workload) {
 function renderRunSelector() {
   const select = $("run");
   select.replaceChildren(...RUNS.map((run, index) => {
-    const label = `${new Date(run.date).toLocaleString()} · ${run.machine.label}${run.quick ? " · quick" : ""}`;
-    return element("option", { value: String(index) }, label);
+    return element("option", { value: String(index) }, runLabel(run));
   }));
   select.addEventListener("change", () => {
     state.run = RUNS[Number(select.value)];
     state.workload = null;
     render();
   });
+}
+
+/**
+ * "version (dirty) - ISO date - CPU", where runs older than the version field omit the version.
+ */
+function runLabel(run) {
+  const version = run.version ? [`${run.version}${run.commit.dirty ? " (dirty)" : ""}`] : [];
+  const date = new Date(run.date).toISOString().replace(/\.\d+Z$/, "Z");
+  return [...version, date, run.machine.cpu].join(" - ") + (run.quick ? " (quick)" : "");
 }
 
 function renderSummary(run) {
@@ -133,6 +141,7 @@ function renderSummary(run) {
   const runCard = element("div", { class: "card" },
     element("h3", {}, "Run"),
     element("dl", {},
+      element("dt", {}, "Version"), element("dd", {}, run.version || "unknown"),
       element("dt", {}, "Date"), element("dd", {}, new Date(run.date).toLocaleString()),
       element("dt", {}, "Commit"), element("dd", {}, commit, run.commit.dirty ? " (uncommitted changes)" : ""),
       element("dt", {}, "Kotlin"), element("dd", {}, run.kotlin),
