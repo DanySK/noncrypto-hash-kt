@@ -1,3 +1,13 @@
+## [1.1.1](https://github.com/DanySK/noncrypto-hash-kt/compare/1.1.0...1.1.1) (2026-11-17)
+
+### Documentation
+
+* improve the benchmark labels ([b93eb34](https://github.com/DanySK/noncrypto-hash-kt/commit/b93eb34bb5106cc36505daf03f719d0c5c2ee3ca))
+
+### Performance improvements
+
+* absorb ASCII text four characters at a time ([af69d33](https://github.com/DanySK/noncrypto-hash-kt/commit/af69d3382351bc27b26796f40ff19977abdd8b80))
+
 ## [1.1.0](https://github.com/DanySK/noncrypto-hash-kt/compare/1.0.0...1.1.0) (2026-11-16)
 
 ### Features
