@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/DanySK/noncrypto-hash-kt/compare/1.2.0...1.2.1) (2026-11-18)
+
+### Documentation
+
+* replace the results with one run per release ([951c516](https://github.com/DanySK/noncrypto-hash-kt/commit/951c5163e407142ff98b9c2c2baeff546988e1d2))
+
 ## [1.2.0](https://github.com/DanySK/noncrypto-hash-kt/compare/1.1.1...1.2.0) (2026-11-17)
 
 ### Features
