@@ -1,0 +1,1012 @@
+{
+    "id": "2026-11-17T19-00-38Z-intel-r-core-tm-i9-14900kf",
+    "date": "2026-11-17T19:00:38.925677882Z",
+    "quick": false,
+    "version": "1.0.0",
+    "machine": {
+        "label": "Intel(R) Core(TM) i9-14900KF",
+        "cpu": "Intel(R) Core(TM) i9-14900KF",
+        "cores": 32,
+        "memoryBytes": 67185434624,
+        "os": "Linux",
+        "osVersion": "7.3.0-rc6-1-MANJARO",
+        "arch": "amd64"
+    },
+    "commit": {
+        "hash": "292ee029090f388ce55f914f0e84651609381c9d",
+        "dirty": false
+    },
+    "kotlin": "2.4.21",
+    "targets": [
+        {
+            "target": "jvm",
+            "runtime": "OpenJDK 64-Bit Server VM 25.0.1+8-LTS",
+            "results": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 200000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 1.579740245,
+                        "min": 1.57468156,
+                        "max": 1.59304013
+                    },
+                    "bytesPerSecond": 5064123690.790697,
+                    "allocatedBytesPerOp": 1.7142857142857143E-8
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 100000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 4.64472974,
+                        "min": 4.56785656,
+                        "max": 4.66807519
+                    },
+                    "bytesPerSecond": 1722382237.0340972,
+                    "allocatedBytesPerOp": 3.4285714285714286E-8
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 21.04920945,
+                        "min": 20.45926865,
+                        "max": 22.0670865
+                    },
+                    "bytesPerSecond": 760123558.9396447,
+                    "allocatedBytesPerOp": 64.00000017142857
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 12000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 40.32012458333333,
+                        "min": 39.932538916666665,
+                        "max": 40.55561016666667
+                    },
+                    "bytesPerSecond": 1587296682.7700465,
+                    "allocatedBytesPerOp": 64.00000028571428
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 800000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 580.4969575,
+                        "min": 577.62655875,
+                        "max": 583.72142125
+                    },
+                    "bytesPerSecond": 1764005800.1509852,
+                    "allocatedBytesPerOp": 64.00000428571428
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 800,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 586259.4775,
+                        "min": 584434.0525,
+                        "max": 587782.47
+                    },
+                    "bytesPerSecond": 1788586863.3995771,
+                    "allocatedBytesPerOp": 64.00428571428571
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 40000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 9.951111225,
+                        "min": 9.787092975,
+                        "max": 10.2842407
+                    },
+                    "bytesPerSecond": 803930316.837555,
+                    "allocatedBytesPerOp": 8.571428571428572E-8
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 80000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 5.362162325,
+                        "min": 5.298814875,
+                        "max": 5.45555015
+                    },
+                    "bytesPerSecond": 1491935438.5639565,
+                    "allocatedBytesPerOp": 4.285714285714286E-8
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 18000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 23.958910833333334,
+                        "min": 23.847297555555556,
+                        "max": 24.11692927777778
+                    },
+                    "bytesPerSecond": 667809989.8322451,
+                    "allocatedBytesPerOp": 1.9047619047619048E-7
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 18000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 26.362164777777778,
+                        "min": 25.3775755,
+                        "max": 26.78758716666667
+                    },
+                    "bytesPerSecond": 2427721719.3464084,
+                    "allocatedBytesPerOp": 1.9047619047619048E-7
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 1200000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 351.0564341666667,
+                        "min": 349.61622083333333,
+                        "max": 359.9290475
+                    },
+                    "bytesPerSecond": 2916909933.386517,
+                    "allocatedBytesPerOp": 0.0000028571428571428573
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 1400,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 358217.925,
+                        "min": 347586.41642857145,
+                        "max": 369850.8664285714
+                    },
+                    "bytesPerSecond": 2927201367.714918,
+                    "allocatedBytesPerOp": 0.0024489795918367346
+                }
+            ],
+            "footprints": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "bytesPerDigest": 64.00024,
+                    "method": "allocation counter"
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "bytesPerDigest": 64.00024,
+                    "method": "allocation counter"
+                }
+            ]
+        },
+        {
+            "target": "js",
+            "runtime": "Node.js v24.16.0",
+            "results": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 600000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 592.814025,
+                        "min": 575.165285,
+                        "max": 614.2743033333334
+                    },
+                    "bytesPerSecond": 13494957.377231417,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 600000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 730.6177733333334,
+                        "min": 707.1814133333334,
+                        "max": 749.0689466666666
+                    },
+                    "bytesPerSecond": 10949637.816092547,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 400000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 1252.8139225,
+                        "min": 1235.1447475,
+                        "max": 1299.6925275
+                    },
+                    "bytesPerSecond": 12771250.153472014,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 140000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 2989.8589142857145,
+                        "min": 2927.800592857143,
+                        "max": 3193.611842857143
+                    },
+                    "bytesPerSecond": 21405692.320197582,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 12000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 40710.111,
+                        "min": 40081.68616666667,
+                        "max": 40968.86083333333
+                    },
+                    "bytesPerSecond": 25153456.348964512,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 10,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 44459568.2,
+                        "min": 43104833.2,
+                        "max": 48343615.1
+                    },
+                    "bytesPerSecond": 23584934.412385948,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 8000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 50.72817225,
+                        "min": 48.427257375,
+                        "max": 53.841448625
+                    },
+                    "bytesPerSecond": 157703296.71201587,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 10000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 42.6509065,
+                        "min": 41.6674008,
+                        "max": 45.1087231
+                    },
+                    "bytesPerSecond": 187569284.13702065,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 4000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 89.18595775,
+                        "min": 87.9813095,
+                        "max": 97.0579145
+                    },
+                    "bytesPerSecond": 179400439.30290136,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 6000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 69.2941815,
+                        "min": 67.157361,
+                        "max": 84.294378
+                    },
+                    "bytesPerSecond": 923598469.8080316,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 1000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 412.602628,
+                        "min": 398.767489,
+                        "max": 463.426297
+                    },
+                    "bytesPerSecond": 2481806780.9301496,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 1000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 391260.919,
+                        "min": 381974.15,
+                        "max": 397010.724
+                    },
+                    "bytesPerSecond": 2679991660.501109,
+                    "allocatedBytesPerOp": null
+                }
+            ],
+            "footprints": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "bytesPerDigest": 247.394,
+                    "method": "heap after GC"
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "bytesPerDigest": 127.638,
+                    "method": "heap after GC"
+                }
+            ]
+        },
+        {
+            "target": "wasmJs",
+            "runtime": "Node.js v26.2.0 (Wasm GC)",
+            "results": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 40000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 11.4102636,
+                        "min": 11.161289775,
+                        "max": 12.119649825
+                    },
+                    "bytesPerSecond": 701123153.7192532,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 25.99416085,
+                        "min": 25.4663954,
+                        "max": 27.5372746
+                    },
+                    "bytesPerSecond": 307761425.58185333,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 4000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 87.0839165,
+                        "min": 84.1322295,
+                        "max": 93.95772925
+                    },
+                    "bytesPerSecond": 183730827.03509322,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 4000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 67.35919025,
+                        "min": 65.57318325,
+                        "max": 67.671041
+                    },
+                    "bytesPerSecond": 950130186.5783638,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 600000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 771.8713383333334,
+                        "min": 747.1948083333333,
+                        "max": 829.5708683333334
+                    },
+                    "bytesPerSecond": 1326645969.5356438,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 400,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 798975.83,
+                        "min": 745158.36,
+                        "max": 813380.265
+                    },
+                    "bytesPerSecond": 1312400151.0784125,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 19.22507275,
+                        "min": 18.43401295,
+                        "max": 21.26110525
+                    },
+                    "bytesPerSecond": 416123262.78453225,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 28.2858397,
+                        "min": 20.1993996,
+                        "max": 32.34020585
+                    },
+                    "bytesPerSecond": 282827028.8189465,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 4000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 143.40929275,
+                        "min": 107.802993,
+                        "max": 189.92746875
+                    },
+                    "bytesPerSecond": 111568781.16603082,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 6000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 67.1226355,
+                        "min": 65.76556183333334,
+                        "max": 70.1013015
+                    },
+                    "bytesPerSecond": 953478651.7731414,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 400000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 968.90833,
+                        "min": 917.6078225,
+                        "max": 1073.3938
+                    },
+                    "bytesPerSecond": 1056859527.670693,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 400,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 941745.975,
+                        "min": 907390.7575,
+                        "max": 1144731.14
+                    },
+                    "bytesPerSecond": 1113438260.248471,
+                    "allocatedBytesPerOp": null
+                }
+            ],
+            "footprints": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "bytesPerDigest": 87.95616,
+                    "method": "heap after GC"
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "bytesPerDigest": 88.00032,
+                    "method": "heap after GC"
+                }
+            ]
+        },
+        {
+            "target": "wasmWasi",
+            "runtime": "WASI on Node.js",
+            "results": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 15.18483115,
+                        "min": 14.8839016,
+                        "max": 15.38492555
+                    },
+                    "bytesPerSecond": 526841551.34645665,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 16000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 29.63605975,
+                        "min": 28.9692630625,
+                        "max": 30.5412383125
+                    },
+                    "bytesPerSecond": 269941418.2413369,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 6000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 76.46763083333333,
+                        "min": 72.23702516666667,
+                        "max": 81.855128
+                    },
+                    "bytesPerSecond": 209238861.2754741,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 6000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 69.75528233333333,
+                        "min": 66.53479416666667,
+                        "max": 78.904838
+                    },
+                    "bytesPerSecond": 917493240.0698907,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 600000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 766.5696816666666,
+                        "min": 755.23232,
+                        "max": 829.5351183333333
+                    },
+                    "bytesPerSecond": 1335821158.193514,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 300,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 890834.27,
+                        "min": 842863.8433333334,
+                        "max": 1095115.8
+                    },
+                    "bytesPerSecond": 1177071914.8467424,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 23.74288445,
+                        "min": 23.1646212,
+                        "max": 25.64864905
+                    },
+                    "bytesPerSecond": 336943054.1115235,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 19.2468445,
+                        "min": 17.0029496,
+                        "max": 19.89242475
+                    },
+                    "bytesPerSecond": 415652550.21414024,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 6000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 75.15816033333333,
+                        "min": 73.2674455,
+                        "max": 115.96353233333333
+                    },
+                    "bytesPerSecond": 212884401.7607474,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 4000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 57.9024175,
+                        "min": 55.137901,
+                        "max": 102.9899895
+                    },
+                    "bytesPerSecond": 1105307908.7760024,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 600000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 715.5755183333333,
+                        "min": 702.6103066666667,
+                        "max": 746.33849
+                    },
+                    "bytesPerSecond": 1431015977.7196217,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 600,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 749797.1116666667,
+                        "min": 725805.3033333333,
+                        "max": 762962.02
+                    },
+                    "bytesPerSecond": 1398479646.9396908,
+                    "allocatedBytesPerOp": null
+                }
+            ],
+            "footprints": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "bytesPerDigest": null,
+                    "method": "unavailable"
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "bytesPerDigest": null,
+                    "method": "unavailable"
+                }
+            ]
+        },
+        {
+            "target": "native",
+            "runtime": "Kotlin/Native 2.4.21 (LINUX, X64)",
+            "results": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 100000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 4.4494314,
+                        "min": 4.40417283,
+                        "max": 4.58896576
+                    },
+                    "bytesPerSecond": 1797982546.7137218,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 21.3589098,
+                        "min": 21.0010507,
+                        "max": 22.18229365
+                    },
+                    "bytesPerSecond": 374550952.03407806,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 10000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 51.1400543,
+                        "min": 50.2218562,
+                        "max": 51.6622428
+                    },
+                    "bytesPerSecond": 312866308.3957656,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 12000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 37.11278125,
+                        "min": 36.56358733333333,
+                        "max": 38.5911405
+                    },
+                    "bytesPerSecond": 1724473290.4516554,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 1200000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 422.02956416666666,
+                        "min": 400.86433666666665,
+                        "max": 434.7592825
+                    },
+                    "bytesPerSecond": 2426370299.48832,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "MurmurHash128",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 1200,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 390377.36916666664,
+                        "min": 387728.3,
+                        "max": 399076.50166666665
+                    },
+                    "bytesPerSecond": 2686057345.584303,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "long-reused-digest",
+                    "label": "Long, reused digest",
+                    "inputBytes": 8,
+                    "batch": 40000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 8.7966631,
+                        "min": 8.7494946,
+                        "max": 8.9989789
+                    },
+                    "bytesPerSecond": 909435760.9307556,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-8",
+                    "label": "8 B",
+                    "inputBytes": 8,
+                    "batch": 60000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 7.830037166666667,
+                        "min": 7.626541983333333,
+                        "max": 8.0423418
+                    },
+                    "bytesPerSecond": 1021706516.80389,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "string-16",
+                    "label": "16-char ASCII string",
+                    "inputBytes": 16,
+                    "batch": 8000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 54.808340375,
+                        "min": 54.151856625,
+                        "max": 56.074754625
+                    },
+                    "bytesPerSecond": 291926372.71129924,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-64",
+                    "label": "64 B",
+                    "inputBytes": 64,
+                    "batch": 20000000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 23.32124785,
+                        "min": 23.1068601,
+                        "max": 23.9944073
+                    },
+                    "bytesPerSecond": 2744278539.9667196,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1KiB",
+                    "label": "1 KiB",
+                    "inputBytes": 1024,
+                    "batch": 1600000,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 306.997683125,
+                        "min": 303.74833,
+                        "max": 322.477516875
+                    },
+                    "bytesPerSecond": 3335530058.6521325,
+                    "allocatedBytesPerOp": null
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "workload": "bytes-1MiB",
+                    "label": "1 MiB",
+                    "inputBytes": 1048576,
+                    "batch": 1600,
+                    "rounds": 7,
+                    "nsPerOp": {
+                        "median": 298230.35625,
+                        "min": 297094.7875,
+                        "max": 300536.651875
+                    },
+                    "bytesPerSecond": 3515993519.8581915,
+                    "allocatedBytesPerOp": null
+                }
+            ],
+            "footprints": [
+                {
+                    "algorithm": "MurmurHash128",
+                    "bytesPerDigest": 70.77888,
+                    "method": "heap after GC"
+                },
+                {
+                    "algorithm": "XxHash32",
+                    "bytesPerDigest": 70.77888,
+                    "method": "heap after GC"
+                }
+            ]
+        }
+    ]
+}
